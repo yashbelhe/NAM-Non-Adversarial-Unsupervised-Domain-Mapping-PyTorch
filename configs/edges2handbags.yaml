@@ -32,8 +32,8 @@ input_dim_t: 3                                           # number of image chann
 input_dim_s: 3                                           # number of image channels in the source domain
 num_workers: 4                                           # number of data loading threads
 img_size: 64                                             # source image size
-src_dataset_train: ../UNIT/datasets/edges2handbags/trainA   # train dataset folder location
-src_dataset_test: ../UNIT/datasets/edges2handbags/testA     # test dataset folder location
+src_dataset_train: datasets/edges2handbags/trainA   # train dataset folder location
+src_dataset_test: datasets/edges2handbags/testA     # test dataset folder location
 
 # evaluation options
 num_sample: 64                  # how many z vectors to minimize for each source img (only top display_size saved)
