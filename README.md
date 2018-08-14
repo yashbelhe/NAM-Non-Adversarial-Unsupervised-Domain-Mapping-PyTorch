@@ -26,7 +26,7 @@ The structure of this codebase is heavily inspired by [this amazing UNIT PyTorch
 Download the dataset:
 
 ```sh
-sh scripts/download_edges2shoes.sh
+bash scripts/download_edges2shoes.sh
 ```
 
 Download Pre-Trained VGG-19 weights [here](http://www.vlfeat.org/matconvnet/models/imagenet-vgg-verydeep-19.mat "imagenet-vgg-verydeep-19.mat"). (For perceptual loss).
