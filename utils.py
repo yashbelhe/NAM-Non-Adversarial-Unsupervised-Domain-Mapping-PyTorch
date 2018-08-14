@@ -31,9 +31,10 @@ def save_result(source, target, epoch, num_save, save_dir, loss_z=None):
 
         for j in range(num_save):
             ax[i, j].cla()
-            # todo
-            # check if image is rgb or grayscale and save accordingly
-            ax[i, j].imshow((test_images[j].transpose(1, 2, 0) + 1) / 2)
+            if test_images.shape[1] == 1:
+                ax[i, j].imshow(test_images[j, 0], cmap='gray')
+            else:
+                ax[i, j].imshow((test_images[j].transpose(1, 2, 0) + 1) / 2)
 
     plt.savefig(os.path.join(save_dir, 'epoch_{}.png'.format(epoch)))
     plt.close()

@@ -6,7 +6,7 @@ import argparse
 import shutil
 import sys
 
-from generators.gen_shoes import SHOESGenerator
+from generators.generator import *
 from transfer_network import Net
 from data_loader import get_loader
 from utils import save_result, get_config, prepare_sub_folder, get_model_list
@@ -22,6 +22,7 @@ config = get_config(opts.config)
 for key in config.keys():
     print("{} : {}".format(key, config[key]))
 
+img_size      = config['img_size']
 num_save      = config['display_size']
 z_dim         = config['z_dim']
    
@@ -37,6 +38,8 @@ vgg_ckpt      = config['vgg_ckpt']
 num_sample    = config['num_sample']
 num_eval_iter = config['num_eval_iter']
 
+dataset       = config['src_dataset_train']
+
 model_name = os.path.splitext(os.path.basename(opts.config))[0]
 output_directory = os.path.join("outputs", model_name)
 checkpoint_directory, _, evaluation_directory = prepare_sub_folder(output_directory)
@@ -49,10 +52,31 @@ def main():
 
     num_test = len(loader.dataset)
 
+    # Generator network for target domain
+    if img_size == 64:
+        G = Generator64().cuda()
+    else:
+        G = Generator32().cuda()
+    g_ckpt = torch.load('models/' + gen_ckpt)
+    G.load_state_dict(g_ckpt)
+    G.eval()
+
+    # Transfer network from target to source domain
+    T = Net(config).cuda()
+    last_model_name = get_model_list(checkpoint_directory)
+    t_ckpt = torch.load(last_model_name)
+    T.load_state_dict(t_ckpt)
+    T.eval()
+
+    vgg19 = VGG19(vgg_ckpt).cuda()
+
     for idx in range(num_test):
 
         # Source image
-        source = loader.dataset[idx].cuda()
+        source = loader.dataset[idx]
+        if dataset in ['svhn', 'mnist']:
+            source = source[0]
+        source = source.cuda()
         source = source.unsqueeze(0)
         source = source.repeat(num_sample, 1, 1, 1)
         
@@ -61,21 +85,6 @@ def main():
         z.requires_grad = True
 
         optimizer_Z = optim.Adam([z], lr=lr_z)
-
-        # Generator network for target domain
-        G = SHOESGenerator().cuda()
-        g_ckpt = torch.load('models/' + gen_ckpt)
-        G.load_state_dict(g_ckpt)
-        G.eval()
-
-        # Transfer network from target to source domain
-        T = Net(config).cuda()
-        last_model_name = get_model_list(checkpoint_directory)
-        t_ckpt = torch.load(last_model_name)
-        T.load_state_dict(t_ckpt)
-        T.eval()
-
-        vgg19 = VGG19(vgg_ckpt).cuda()
         
         for it in range(num_eval_iter):            
             # Update Z vector

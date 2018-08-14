@@ -19,18 +19,19 @@ class SubsetSampler(Sampler):
     def __len__(self):
         return len(self.indices)
 
-def get_loader_svhn(num_train, batch_size):
-    """Builds and returns Dataloader for MNIST and SVHN dataset."""
+def get_loader_svhn(num_train, batch_size, train):
+    """Builds and returns Dataloader for SVHN dataset."""
     transform = transforms.Compose([
                     transforms.Scale((32,32)),
                     transforms.ToTensor(),
                     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-    
-    svhn = datasets.SVHN(root='./datasets/svhn', download=True, transform=transform)
-    mnist = datasets.MNIST(root='./datasets/mnist', download=True, transform=transform)
+    if train:
+        split = 'train'
+    else:
+        split = 'test'
+    svhn = datasets.SVHN(root='./datasets/svhn', split=split, download=True, transform=transform)
     
     indices = list(range(num_train))
-    np.random.seed(1)
     np.random.shuffle(indices)
     sampler = SubsetSampler(indices)
 
@@ -40,6 +41,26 @@ def get_loader_svhn(num_train, batch_size):
                                               num_workers=1,
                                               pin_memory=True)
     return svhn_loader
+
+def get_loader_mnist(num_train, batch_size, train):
+    """Builds and returns Dataloader for MNIST dataset."""
+    transform = transforms.Compose([
+                    transforms.Scale((32,32)),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+    
+    mnist = datasets.MNIST(root='./datasets/mnist', train=train, download=True, transform=transform)
+    
+    indices = list(range(num_train))
+    np.random.shuffle(indices)
+    sampler = SubsetSampler(indices)
+
+    mnist_loader = torch.utils.data.DataLoader(dataset=mnist,
+                                              batch_size=batch_size,
+                                              sampler=sampler,
+                                              num_workers=1,
+                                              pin_memory=True)
+    return mnist_loader
 
 
 IMG_EXTENSIONS = [
@@ -102,6 +123,16 @@ def get_loader(config, train=True):
     batch_size  = config['batch_size']
     img_size    = config['img_size']
     num_workers = config['num_workers']
+
+    if train:
+        dataset_path = config['src_dataset_train']
+    else:
+        dataset_path = config['src_dataset_test']
+
+    if dataset_path == 'mnist':
+        return get_loader_mnist(num_train, batch_size, train)
+    elif dataset_path == 'svhn':
+        return get_loader_svhn(num_train, batch_size, train)
     
     transform_list = [
                     transforms.Scale(img_size),
@@ -110,11 +141,6 @@ def get_loader(config, train=True):
                     (0.5, 0.5, 0.5))
     ]
     transform = transforms.Compose(transform_list)
-
-    if train:
-        dataset_path = config['src_dataset_train']
-    else:
-        dataset_path = config['src_dataset_test']
 
     dataset = ImageFolder(dataset_path, transform=transform)
 

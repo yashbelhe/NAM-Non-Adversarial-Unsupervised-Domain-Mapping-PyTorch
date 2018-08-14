@@ -30,12 +30,16 @@ bash scripts/download_edges2shoes.sh
 ```
 
 Download Pre-Trained VGG-19 weights [here](http://www.vlfeat.org/matconvnet/models/imagenet-vgg-verydeep-19.mat "imagenet-vgg-verydeep-19.mat"). (For perceptual loss).
-Download Pre-Trained Generator [here](https://drive.google.com/open?id=16XVS2B86o1lyrYeol533lhkO_1upgcrm "generator_shoes.pkl").
+
+Download Pre-Trained Generator (edges2shoes) [here](https://drive.google.com/open?id=16XVS2B86o1lyrYeol533lhkO_1upgcrm "generator_shoes.pkl").
+
+Download Pre-Trained Generator (edges2handbags) [here](https://drive.google.com/open?id=16XVS2B86o1lyrYeol533lhkO_1upgcrm "generator_handbags.pkl").
+
 Move both downloaded files i.e. imagenet-vgg-verydeep-19.mat and generator_shoes.pkl to the models folder.
 
 Start Training:
 ```sh
-python train.py --config configs/edges2shoes.py
+python train.py --config configs/edges2shoes.yaml
 ```
 
 Outputs during training and model checkpoints are stored here 

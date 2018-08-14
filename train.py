@@ -5,8 +5,7 @@ import os
 import argparse
 import shutil
 
-# from generator import MNISTGenerator, SHOESGenerator
-from generators.gen_shoes import SHOESGenerator
+from generators.generator import *
 from transfer_network import Net
 from data_loader import get_loader
 from utils import save_result, get_config, prepare_sub_folder
@@ -25,6 +24,7 @@ for key in config.keys():
 num_epochs    = config['num_epochs']
 num_train     = config['num_train']
 num_save      = config['display_size']
+img_size      = config['img_size']
    
 img_save_it   = config['image_save_iter']
 model_save_it = config['snapshot_save_iter']
@@ -45,6 +45,8 @@ gen_ckpt      = config['gen_ckpt']
    
 vgg_ckpt      = config['vgg_ckpt']
 
+dataset       = config['src_dataset_train']
+
 model_name = os.path.splitext(os.path.basename(opts.config))[0]
 output_directory = os.path.join("outputs", model_name)
 checkpoint_directory, image_directory, _ = prepare_sub_folder(output_directory)
@@ -63,7 +65,10 @@ def main():
     scheduler_Z = optim.lr_scheduler.StepLR(optimizer_Z, step_size=step_size, gamma=gamma)
 
     # Generator network for target domain
-    G = SHOESGenerator().cuda()
+    if img_size == 64:
+        G = Generator64().cuda()
+    else:
+        G = Generator32().cuda()
     g_ckpt = torch.load('models/' + gen_ckpt)
     G.load_state_dict(g_ckpt)
     G.eval()
@@ -79,6 +84,8 @@ def main():
 
     for epoch in range(num_epochs):
         for step, data in enumerate(loader):
+            if dataset in ['svhn', 'mnist']:
+                data = data[0]
             source = data.cuda()
 
             z = z_y[step*batch_size:(step+1)*batch_size]

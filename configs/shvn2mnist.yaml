@@ -4,7 +4,7 @@ display_size: 12               # How many images do you want to save each time
 snapshot_save_iter: 1         # How often (epochs) do you want to save trained models
 
 # optimization options
-num_epochs: 40                # maximum number of training iterations
+num_epochs: 200               # maximum number of training iterations
 batch_size: 64                # batch size
 lr_z: 0.03                    # initial learning rate
 lr_t: 0.001                   # initial learning rate
@@ -16,24 +16,24 @@ vgg_w: 1                      # weight of image reconstruction loss
 
 # transfer network arch
 start_size: 4
-crn_depths: [128, 64, 32, 16]
+crn_depths: [128, 64, 32]
 lrelu_slope: 0.2
 
 # generator options
-gen_ckpt: generator_shoes.pkl
+gen_ckpt: generator_mnist.pkl
 
 # vgg model for perceptual loss
 vgg_ckpt: imagenet-vgg-verydeep-19.mat
 
 # data options
 num_train: 2000                                          # number of training images from the source dataset
-z_dim: 100                                               # generator latent space dim
-input_dim_t: 3                                           # number of image channels in the target domain
+z_dim: 32                                                # generator latent space dim
+input_dim_t: 1                                           # number of image channels in the target domain
 input_dim_s: 3                                           # number of image channels in the source domain
 num_workers: 4                                           # number of data loading threads
-img_size: 64                                             # source image size
-src_dataset_train: ../UNIT/datasets/edges2shoes/trainA   # train dataset folder location
-src_dataset_test: datasets/edges2shoes/testA     # test dataset folder location
+img_size: 32                                             # source image size
+src_dataset_train: svhn   # train dataset folder location
+src_dataset_test: svhn     # test dataset folder location
 
 # evaluation options
 num_sample: 64                  # how many z vectors to minimize for each source img (only top display_size saved)

@@ -9,5 +9,4 @@ mv datasets/edges2handbags/train0 datasets/edges2handbags/trainA
 mv datasets/edges2handbags/train1 datasets/edges2handbags/trainB
 mv datasets/edges2handbags/test0 datasets/edges2handbags/testA
 mv datasets/edges2handbags/test1 datasets/edges2handbags/testB
-python3 train.py --config configs/unit_edges2handbags_folder.yaml --trainer UNIT
 
