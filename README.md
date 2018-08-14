@@ -5,30 +5,32 @@ This code was written by Yash Belhe.
 
 From qualitatve assesments, the code produces results similar to those in the paper as show below.
 
-![](sample_images/dges2shoes.png)
-![](sample_images/edges2handbags.png)
+![Edges2Shoes](sample_images/edges2shoes.png)
+![Edges2Handbags](sample_images/edges2handbags.png)
+
+The structure of this codebase is heavily inspired by [this amazing UNIT PyTorch implemenation](https://github.com/mingyuliutw/UNIT).
 
 ## Getting  Started
 ### Requirements
 
-PyTorch 0.4
-PIL
-numpy
-torchvision
-yaml
-shutil
-matplotlib
+* PyTorch 0.4
+* PIL
+* numpy
+* torchvision
+* yaml
+* shutil
+* matplotlib
 
 ## Usage example (edges2shoes)
 
 Download the dataset:
 
 ```sh
-sh datasets/downloadedges2shoes
+sh datasets/download_edges2shoes.sh
 ```
 
 Download Pre-Trained VGG-19 weights [here](http://www.vlfeat.org/matconvnet/models/imagenet-vgg-verydeep-19.mat "imagenet-vgg-verydeep-19.mat"). (For perceptual loss).
-Download Pre-Trained Generator here.
+Download Pre-Trained Generator [here](https://drive.google.com/open?id=16XVS2B86o1lyrYeol533lhkO_1upgcrm "generator_shoes.pkl").
 Move both downloaded files i.e. imagenet-vgg-verydeep-19.mat and generator_shoes.pkl to the models folder.
 
 Start Training:
